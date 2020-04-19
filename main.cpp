@@ -48,25 +48,245 @@ send me a DM to check your pull request
 /*
  copied UDT 1:
  */
+ #include <iostream>
+struct Effect
+{
+	std::string name;
+	unsigned short number;
+	float param1;
+	float param2;
 
+    struct Preset 
+    {
+        float param1, param2, effectNumber; 
+        Preset()
+        {
+            param1 = 0;
+            param2 = 0;
+            std::cout << "Preset loaded" << std::endl;
+        }
+        ~Preset()
+        {
+            std::cout << "Preset destructed" << std::endl;
+        }
+    };
+    Preset myPresset;
+
+
+    Effect() 
+    {
+        param1 = 0; 
+        param2 = 0;
+        std::cout << "Effect created, parameters initialized to: " << param1 <<std::endl;
+        number = 1;
+    }
+    ~Effect()
+    {
+        std::cout << "Effect destructed" << std::endl;
+    }
+
+    void savePreset( float currentParam1, float currentParam2, float effectNumber, Preset presetName);
+    void changePreset( float currentParam1, float currentParam2 );
+    void ressetPresets(Effect effect);
+};
+
+void Effect::savePreset( float currentParam1, float currentParam2, float effectNumber, Preset presetName)
+{
+    presetName.param1 = currentParam1;
+    presetName.param2 = currentParam2;
+    presetName.effectNumber = effectNumber;
+    std::cout << "Preset " << presetName.effectNumber << " is saved!" << std::endl; 
+}
+void Effect::changePreset(float currentParam1, float currentParam2)
+{
+    param1 = currentParam1; //this is some getto getter/setter thing, right?
+    param2 = currentParam2;
+    std::cout << "Effect number changed to: " << number++ << std::endl;
+}
+void Effect::ressetPresets(Effect effect)
+{   
+    unsigned short currentEffectNr = effect.number;
+    while( currentEffectNr < 3)
+    {
+        param1=0;
+        param2=0;
+        std::cout << "Effect number: " << currentEffectNr << " is reseted." <<std::endl;
+        currentEffectNr++;        
+    }
+}
 /*
  copied UDT 2:
  */
+struct Filter
+{
+    std::string type;
+    int order;
+    bool bypassLED = false;
+    float cutoff = 10000;
 
+    Filter()
+    {
+        if(order==2)
+            type = "Steiner-Parker";
+        else
+            type = "Ladder";
+    }
+    ~Filter()
+    {
+        std::cout << "Filter destructed" << std::endl;
+    }
+    std::string changeType( std::string currentType );
+    void bypass();
+    void changeCutoff( float );
+};
+
+std::string Filter::changeType( std::string currentType )
+{
+    std::cout << "Cutoff is: " << cutoff << std::endl;
+    return currentType;
+}
+
+void Filter::bypass()
+{
+    bypassLED = true;
+}
+
+void Filter::changeCutoff(float newCutoff)
+{
+    if ( newCutoff < cutoff )
+    {
+        while ( newCutoff < cutoff )
+        {
+            cutoff -= 100;
+            std::cout << "Cutoff decreaded by 100" << std::endl;
+        }
+    }
+    else if( newCutoff * 0.99f < cutoff  && newCutoff * 1.01f > cutoff )  
+    {
+        std::cout << "Cutoff not changed." << std::endl;    
+    }
+    else
+    {
+        while ( cutoff < newCutoff )
+        {
+            cutoff += 100;
+            std::cout << "Cutoff increaded by 100" << std::endl;
+        }
+    }   
+}
 /*
  copied UDT 3:
  */
+#include <vector>
+struct Wavetable 
+{
+    std::string name = "blank";
+    std::vector < float > wavetable ;
+
+    Wavetable()
+    {
+        std::cout << "Wavetable is created" << std::endl;
+    }
+     ~Wavetable()
+    {
+        std::cout << "Wavetable destructed" << std::endl;
+    }
+
+    float getCurrentSample( float waveSamples[] , int currentSampleNr );
+    void applyEffect(Effect effect); 
+    void populateWavetable(Wavetable destination);
+};
+
+float Wavetable::getCurrentSample( float waveSamples[], int currentSampleNr )
+{
+    return waveSamples[currentSampleNr];
+}
+void  Wavetable::applyEffect( Effect effect )
+{
+    effect.param1 = rand();
+    effect.param2 = rand();
+}
+void Wavetable::populateWavetable( Wavetable destination )
+{
+    for( int i = 0; i < 4; i++ )
+    {
+        destination.wavetable.push_back(rand());
+    }
+    int i = 0;
+    for(float& item : destination.wavetable)
+    {
+        i++;
+        std::cout << "Wavetable at position " << i << " value is " << item << std::endl;
+    }
+}
 
 /*
  new UDT 4:
  */
 
+struct EffectsChain
+{
+    Effect firstEffect;
+    Effect secondEffect;
+    Filter filter;
+
+    EffectsChain()
+    {
+        firstEffect.name = "Delay";
+        firstEffect.param1 = rand();
+        secondEffect.name = "Reverb";
+        secondEffect.param1 = rand();
+        std::cout << "Effects chain created" << std::endl; 
+    }
+    ~EffectsChain()
+    {
+        std::cout << "Effects chain destructed" << std:: endl;
+        firstEffect.param1 = 0;
+        firstEffect.param2 = 0;
+        secondEffect.param1 = 0;
+        secondEffect.param2 = 0;
+        filter.changeType("Steiner-Parker");
+    }
+};
+
 /*
  new UDT 5:
  */
+Wavetable testWavetable;
 
-#include <iostream>
+ struct WavetableBank
+ {
+    Wavetable w1;
+    Wavetable W2;
+
+    WavetableBank()
+    {
+         std::cout << "Bank created" << std::endl;
+    }
+
+    ~WavetableBank()
+    {
+        w1.populateWavetable(testWavetable);
+        std::cout << "Bank destroyed" << std::endl; 
+    }
+ };
+
+ //main
 int main()
 {
+    //Part 3
+    Effect effect1;
+    Effect effect2;
+    Filter myLOP;
+    //Part 5 
+    EffectsChain effectsChain;
+    WavetableBank wavetables;
+
+    effect1.savePreset( 0.3f, 0.4f, 1, effect1.myPresset );
+    effect1.changePreset(0.2f, 1.0f);
+    effect1.ressetPresets(effect1);
+    myLOP.changeCutoff(10000);
+    testWavetable.populateWavetable(testWavetable);
+
     std::cout << "good to go!" << std::endl;
 }
