@@ -252,7 +252,6 @@ struct EffectsChain
 /*
  new UDT 5:
  */
-Wavetable testWavetable; FIXME remove this. 
 
  struct WavetableBank
  {
@@ -266,7 +265,6 @@ Wavetable testWavetable; FIXME remove this.
 
     ~WavetableBank()
     {
-        w1.populateWavetable(testWavetable);
         std::cout << "Bank destroyed" << std::endl; 
     }
  };
@@ -286,7 +284,6 @@ int main()
     effect1.changePreset(0.2f, 1.0f);
     effect1.ressetPresets(effect1);
     myLOP.changeCutoff(10000);
-    testWavetable.populateWavetable(testWavetable);
 
     std::cout << "good to go!" << std::endl;
 }
