@@ -261,7 +261,7 @@ Wavetable testWavetable; FIXME remove this.
 
     WavetableBank()
     {
-         std::cout << "Bank created" << std::endl;
+        std::cout << "Bank created" << std::endl;
     }
 
     ~WavetableBank()
