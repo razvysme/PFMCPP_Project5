@@ -252,7 +252,7 @@ struct EffectsChain
 /*
  new UDT 5:
  */
-Wavetable testWavetable;
+Wavetable testWavetable; FIXME remove this. 
 
  struct WavetableBank
  {
