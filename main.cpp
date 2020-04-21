@@ -51,10 +51,10 @@ send me a DM to check your pull request
  #include <iostream>
 struct Effect
 {
-	std::string name;
-	unsigned short number;
-	float param1;
-	float param2;
+    std::string name;
+    unsigned short number;
+    float param1;
+    float param2;
 
     struct Preset 
     {
